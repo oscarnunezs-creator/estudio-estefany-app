@@ -44,15 +44,20 @@ export default function POS() {
   const [processing, setProcessing] = useState(false);
 
   const load = useCallback(async () => {
-    setLoading(true);
-    const [{ data: prods }, { data: profs }] = await Promise.all([
-      productsSvc.getAll(),
-      professionalsSvc.getAll()
-    ]);
-    // Only show products that can be sold (sale price > 0)
-    setProducts((prods || []).filter((p: Product) => p.sale_price > 0 || p.price > 0));
-    setProfessionals(profs || []);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const [{ data: prods }, { data: profs }] = await Promise.all([
+        productsSvc.getAll(),
+        professionalsSvc.getAll()
+      ]);
+      // Only show products that can be sold (sale price > 0)
+      setProducts((prods || []).filter((p: Product) => p.sale_price > 0 || p.price > 0));
+      setProfessionals(profs || []);
+    } catch (error) {
+      console.error('Error loading POS data:', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);

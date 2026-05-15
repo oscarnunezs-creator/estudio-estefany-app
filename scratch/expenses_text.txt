@@ -1,0 +1,226 @@
+--- PAGE 1 ---
+TIPOS DE GASTOS PARA ESTUDIO ESTEFANY BY LASHES
+Categorización para control financiero
+Documento FIN-GAS-001
+Versión 1.0
+Fecha 13 de mayo de 2026
+Elaborado por Administradora
+Aplicación Registro de egresos del estudio
+========================================================================
+=======
+1. OBJETIVO DE LA CATEGORIZACIÓN DE GASTOS
+Clasificar los gastos del estudio en categorías claras y útiles para el control financiero,
+permitiendo identificar hacia dónde se va el dinero, detectar áreas de mejora y tomar
+decisiones informadas sobre reducción de costos o reasignación de recursos.
+========================================================================
+=======
+2. CATEGORÍAS PRINCIPALES DE GASTOS
+2.1. GASTOS OPERATIVOS DIRECTOS
+Son los gastos directamente relacionados con la prestación de los servicios del estudio.
+Categoría Qué incluye Ejemplos
+Insumos y Productos que se Pegamento, pestañas, tintes,
+materiales consumen en los servicios algodón, guantes, toallas, removedor
+Productos para Productos comprados Shampoo, kit de cejas, esmalte,
+venta para revender cremas, accesorios
+Equipos y Compra de equipos Camillas, secadores, lámparas, POS,
+herramientas duraderos computadora
+|
+2.2. GASTOS OPERATIVOS INDIRECTOS
+Son los gastos necesarios para el funcionamiento del estudio, pero no directamente
+vinculados a cada servicio.
+Categoría Qué incluye Ejemplos
+Alquiler Arrendamiento del Alquiler mensual del espacio
+local
+Servicios Gastos de suministros Luz, agua, internet, teléfono
+públicos
+Mantenimiento Reparaciones y Mantenimiento de equipos, reparaciones
+conservación eléctricas, limpieza profunda
+Limpieza y aseo Productos e insumos Papel higiénico, jabón, lavandina, bolsas
+de limpieza
+
+--- PAGE 2 ---
+2.3. GASTOS DE PERSONAL
+Son los gastos relacionados con el equipo de trabajo.
+Categoría Qué incluye Ejemplos
+Comisiones por Pago a profesionales por 30% de comisión sobre
+servicios servicios realizados servicios atendidos
+Comisiones por Pago por venta de productos 10% de comisión sobre
+ventas productos vendidos
+Sueldo fijo (si Sueldo base de recepcionista o Mensual o quincenal
+aplica) profesionales
+Bonos o incentivos Pagos extraordinarios por Bono por cumplimiento de
+desempeño metas
+2.4. GASTOS DE MARKETING Y PUBLICIDAD
+Son los gastos para promocionar el estudio y atraer clientes.
+Categoría Qué incluye Ejemplos
+Publicidad digital Anuncios en redes sociales Instagram Ads, Facebook Ads
+Material impreso Flyers, tarjetas, catálogos Tarjetas de presentación,
+volantes
+Promociones Descuentos y ofertas Descuento por cumpleaños, 2x1
+especiales
+Fotografía y Fotos profesionales para Sesión de fotos de servicios
+contenido redes realizados
+2.5. GASTOS ADMINISTRATIVOS
+Son los gastos relacionados con la gestión y administración del negocio.
+Categoría Qué incluye Ejemplos
+Software y Plataformas, App de gestión, sistema de agenda
+tecnología aplicaciones, sistemas
+Papelería Útiles de oficina Facturas, bolígrafos, carpetas
+Gastos Comisiones y Comisión por transferencia,
+bancarios transferencias mantenimiento de cuenta
+Consultoría y Servicios profesionales Contador, asesor legal
+asesoría externos
+2.6. OTROS GASTOS
+Gastos que no encajan en las categorías anteriores.
+Categoría Qué incluye Ejemplos
+Imprevistos Gastos no planificados Reparación urgente, multa, pérdida de
+dinero
+Cursos y Formación del Curso de nuevas técnicas de pestañas
+capacitación personal
+
+--- PAGE 3 ---
+Mermas Productos dañados o Producto vencido, roto, perdido
+vencidos
+Otros Gastos no clasificados Cualquier gasto que no encaje en las
+categorías anteriores
+========================================================================
+=======
+3. TABLA RESUMEN DE CATEGORÍAS DE GASTOS
+Categoría Subcategoría Ejemplo
+Código
+G-01 Operativos directos Insumos Pegamento, pestañas,
+algodón
+G-01 Operativos directos Productos para Shampoo, kit de cejas
+venta
+G-01 Operativos directos Equipos Camillas, secadores
+G-02 Operativos Alquiler Arrendamiento del local
+indirectos
+G-02 Operativos Servicios públicos Luz, agua, internet
+indirectos
+G-02 Operativos Mantenimiento Reparaciones
+indirectos
+G-02 Operativos Limpieza Papel, jabón
+indirectos
+G-03 Personal Comisiones 30% de servicios
+servicios
+G-03 Personal Comisiones ventas 10% de productos vendidos
+G-03 Personal Sueldo fijo Recepcionista
+G-03 Personal Bonos Incentivos
+G-04 Marketing Publicidad digital Instagram Ads
+G-04 Marketing Material impreso Flyers, tarjetas
+G-04 Marketing Promociones Descuentos
+G-05 Administrativos Software App de gestión
+G-05 Administrativos Papelería Facturas, útiles
+G-05 Administrativos Gastos bancarios Comisiones
+G-05 Administrativos Consultoría Contador
+G-06 Otros Imprevistos Reparación urgente
+G-06 Otros Capacitación Cursos
+G-06 Otros Mermas Productos dañados
+========================================================================
+=======
+4. GASTOS FRECUENTES EN UN ESTUDIO DE PESTAÑAS (ejemplos reales)
+Gasto Categoría Frecuencia Monto estimado
+(referencial)
+Pegamento para Insumos Mensual S/ 150 - 300
+pestañas
+Tiras de pestañas Insumos Mensual S/ 200 - 400
+Algodón y toallas Insumos Semanal S/ 50 - 100
+
+--- PAGE 4 ---
+Guantes Insumos Semanal S/ 30 - 60
+Alquiler del local Alquiler Mensual S/ 1,000 - 2,500
+Luz Servicios Mensual S/ 150 - 300
+públicos
+Internet Servicios Mensual S/ 80 - 150
+públicos
+Agua Servicios Mensual S/ 50 - 100
+públicos
+Mantenimiento de Mantenimiento Trimestral S/ 100 - 300
+equipos
+Papel higiénico, jabón Limpieza Mensual S/ 50 - 100
+Comisiones a Personal Quincenal Variable
+profesionales
+Sueldo recepcionista Personal Mensual S/ 1,000 - 1,500
+Instagram Ads Marketing Mensual S/ 100 - 500
+Flyers o tarjetas Marketing Trimestral S/ 50 - 150
+App de gestión (sistema) Software Mensual S/ 50 - 150
+Facturas y papel Papelería Mensual S/ 20 - 50
+Comisión transferencia Gastos Por Variable
+bancarios transacción
+Contador (si aplica) Consultoría Mensual S/ 150 - 300
+Curso de capacitación Capacitación Anual S/ 300 - 800
+Productos dañados o Mermas Eventual Variable
+vencidos
+========================================================================
+=======
+5. CÓMO SE REGISTRA CADA GASTO
+Tipo de gasto Quién registra Comprobante Cuándo se registra
+necesario
+Insumos y Factura o boleta El mismo día de la
+materiales Recepcionista compra
+Productos para Factura o boleta El mismo día de la
+venta Recepcionista compra
+Equipos y Administrador Factura El mismo día de la
+herramientas compra
+Alquiler Administrador Contrato / recibo El día del pago
+Servicios públicos Administrador Recibo El día del pago
+Comisiones al Administrador Planilla de pago El día del pago
+personal
+Sueldo Administrador Planilla de pago El día del pago
+recepcionista
+Marketing Administrador Factura o boleta El día del pago
+Software Administrador Factura El día del pago
+|
+========================================================================
+=======
+6. REPORTES DE GASTOS POR CATEGORÍA
+
+--- PAGE 5 ---
+Para la toma de decisiones, el sistema debe generar reportes que respondan:
+Pregunta de negocio Reporte necesario
+¿En qué categoría se gasta más dinero? Gastos por categoría (gráfico de
+torta)
+¿Cómo han evolucionado los gastos en los Evolución de gastos por categoría
+últimos meses? (línea de tiempo)
+¿Los gastos en insumos son proporcionales a % de gastos en insumos vs ingresos
+los ingresos?
+¿Estoy gastando mucho en marketing? % de gastos en marketing vs ingresos
+¿Las comisiones son muy altas comparadas % de comisiones vs ingresos
+con otros gastos?
+¿Cuáles fueron los gastos más grandes del Top 5 gastos más altos
+mes?
+========================================================================
+=======
+7. CLASIFICACIÓN SIMPLIFICADA (para uso diario)
+Si se necesita una versión más simple para el día a día, se pueden agrupar en 5 grandes
+categorías:
+Categoría Agrupa Ejemplos
+simplificada
+Compras Insumos, productos para venta, Pegamento, shampoo,
+materiales algodón, guantes
+Gastos fijos Alquiler, servicios, software, Alquiler, luz, agua, sistema
+internet
+Personal Comisiones, sueldos, bonos Comisión 30%, sueldo
+recepcionista
+Marketing Publicidad, promociones, Instagram Ads, flyers,
+material impreso descuentos
+Otros Mantenimiento, imprevistos, Reparaciones, cursos
+capacitación
+========================================================================
+=======
+8. CONCLUSIONES
+La categorización de gastos permite a ESTEFANY BY LASHES:
+1. Controlar hacia dónde se va el dinero (identificar gastos hormiga).
+2. Detectar áreas de mejora (si los gastos en insumos son muy altos, buscar mejores
+proveedores).
+3. Planificar el presupuesto (saber cuánto se gasta en promedio por categoría).
+4. Evaluar la rentabilidad (comparar gastos vs ingresos).
+5. Tomar decisiones informadas (¿debo reducir marketing? ¿debo subir precios?).
+========================================================================
+=======
+
+--- PAGE 6 ---
+ESTEFANY BY LASHES - "Tu mirada, nuestra pasión"
+========================================================================
+=======
+

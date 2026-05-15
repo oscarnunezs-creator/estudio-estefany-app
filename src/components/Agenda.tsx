@@ -112,21 +112,26 @@ export default function Agenda() {
   const weekDays = getWeekDays(weekBase);
 
   const loadAppointments = useCallback(async () => {
-    setLoading(true);
-    let from, to;
-    if (view === 'month') {
-      const start = startOfWeek(startOfMonth(monthBase));
-      const end = endOfWeek(endOfMonth(monthBase));
-      from = start.toISOString();
-      to = new Date(end.getTime() + 86400000).toISOString();
-    } else {
-      from = weekDays[0].toISOString();
-      to = new Date(weekDays[6].getTime() + 86400000).toISOString();
+    try {
+      setLoading(true);
+      let from, to;
+      if (view === 'month') {
+        const start = startOfWeek(startOfMonth(monthBase));
+        const end = endOfWeek(endOfMonth(monthBase));
+        from = start.toISOString();
+        to = new Date(end.getTime() + 86400000).toISOString();
+      } else {
+        from = weekDays[0].toISOString();
+        to = new Date(weekDays[6].getTime() + 86400000).toISOString();
+      }
+      const { data } = await appointmentsSvc.getByRange(from, to);
+      setAppointments(data || []);
+    } catch (error) {
+      console.error('Error loading appointments:', error);
+    } finally {
+      setLoading(false);
     }
-    const { data } = await appointmentsSvc.getByRange(from, to);
-    setAppointments(data || []);
-    setLoading(false);
-  }, [weekBase, monthBase, view]);
+  }, [weekBase, monthBase, view, weekDays]);
 
   useEffect(() => { loadAppointments(); }, [loadAppointments]);
   useEffect(() => {

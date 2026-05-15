@@ -169,14 +169,19 @@ export default function Clients() {
   };
 
   const load = useCallback(async () => {
-    setLoading(true);
-    const [custRes, configRes] = await Promise.all([
-      customersSvc.getAll(),
-      configSvc.get()
-    ]);
-    setCustomers(custRes.data || []);
-    if (configRes.data) setConfig(configRes.data);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const [custRes, configRes] = await Promise.all([
+        customersSvc.getAll(),
+        configSvc.get()
+      ]);
+      setCustomers(custRes.data || []);
+      if (configRes.data) setConfig(configRes.data);
+    } catch (error) {
+      console.error('Error loading clients data:', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);

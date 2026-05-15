@@ -76,7 +76,7 @@ export const bedsSvc = {
 
 // ─── SALON CONFIG ─────────────────────────────────────────────
 export const configSvc = {
-  get: () => supabase.from('salon_config').select('*').single(),
+  get: () => supabase.from('salon_config').select('*').maybeSingle(),
   update: (id: string, data: Partial<SalonConfig>) =>
     supabase.from('salon_config').update(data).eq('id', id).select().single(),
 };
@@ -137,7 +137,7 @@ export const productsSvc = {
 export const cashRecordsSvc = {
   getToday: () => {
     const d = new Date().toISOString().split('T')[0];
-    return supabase.from('cash_records').select('*').eq('date', d).single();
+    return supabase.from('cash_records').select('*').eq('date', d).maybeSingle();
   },
   getByDate: (date: string) => supabase.from('cash_records').select('*').eq('date', date),
   create: (data: any) => supabase.from('cash_records').insert(data).select().single(),
