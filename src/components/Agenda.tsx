@@ -131,7 +131,7 @@ export default function Agenda() {
     } finally {
       setLoading(false);
     }
-  }, [weekBase, monthBase, view, weekDays]);
+  }, [weekBase, monthBase, view]);
 
   useEffect(() => { loadAppointments(); }, [loadAppointments]);
   useEffect(() => {

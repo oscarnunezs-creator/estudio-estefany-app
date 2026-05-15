@@ -131,7 +131,7 @@ export default function Dashboard() {
         salesSvc.getToday(),
         productsSvc.getLowStockRaw(),
         customersSvc.getAll(),
-        transactionsSvc.getByRange(startOfPrevYear, endOfCurrentYear),
+        transactionsSvc.getByRange(startOfPrevYear, endOfCurrentYear, 'amount, type, status, created_at'),
         configSvc.get(),
         transactionsSvc.getToday()
       ]);

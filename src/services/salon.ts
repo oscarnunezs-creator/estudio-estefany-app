@@ -83,8 +83,8 @@ export const configSvc = {
 
 // ─── TRANSACTIONS ────────────────────────────────────────────
 export const transactionsSvc = {
-  getByRange: (from: string, to: string) =>
-    supabase.from('transactions').select('*').gte('created_at', from).lt('created_at', to).order('created_at', { ascending: false }),
+  getByRange: (from: string, to: string, columns: string = '*') =>
+    supabase.from('transactions').select(columns).gte('created_at', from).lt('created_at', to).order('created_at', { ascending: false }),
 
   getToday: () => {
     const { from, to } = todayRangeUTC();
