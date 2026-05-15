@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import type { Appointment, Customer, Product, Transaction, SalonConfig } from '../types';
+import type { Appointment, Customer, Product, Transaction, SalonConfig, UserProfile } from '../types';
 
 // ─── helpers ────────────────────────────────────────────────
 const todayISO = () => new Date().toISOString().split('T')[0];
@@ -164,5 +164,13 @@ export const debtsSvc = {
   getAll: () => supabase.from('supplier_debts').select('*').order('due_date', { ascending: true }),
   create: (data: any) => supabase.from('supplier_debts').insert(data).select().single(),
   update: (id: string, data: any) => supabase.from('supplier_debts').update(data).eq('id', id).select().single(),
+};
+
+// ─── USERS & ROLES ───────────────────────────────────────────
+export const usersSvc = {
+  getAll: () => supabase.from('users').select('*').order('created_at'),
+  getById: (uid: string) => supabase.from('users').select('*').eq('uid', uid).maybeSingle(),
+  update: (uid: string, data: Partial<UserProfile>) => 
+    supabase.from('users').update(data).eq('uid', uid).select().single(),
 };
 

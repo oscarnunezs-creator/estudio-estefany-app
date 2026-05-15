@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Modal, Badge, Spinner, EmptyState, Input, Select, Card } from './ui';
-import { configSvc, professionalsSvc, servicesSvc, bedsSvc } from '../services/salon';
+import { configSvc, professionalsSvc, servicesSvc, bedsSvc, usersSvc } from '../services/salon';
 import { setSalonCurrency } from '../lib/utils';
 import Papa from 'papaparse';
-import type { SalonConfig, Professional, Service, SalonBed } from '../types';
+import type { SalonConfig, Professional, Service, SalonBed, UserProfile } from '../types';
 
 export default function AdminSettings() {
-  const [activeTab, setActiveTab] = useState<'catalog' | 'staff' | 'beds' | 'policies' | 'messages'>('catalog');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'staff' | 'beds' | 'policies' | 'messages' | 'users'>('catalog');
   
   const [config, setConfig] = useState<SalonConfig | null>(null);
   const [staff, setStaff] = useState<Professional[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [beds, setBeds] = useState<SalonBed[]>([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
   
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -20,10 +21,12 @@ export default function AdminSettings() {
   const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
   const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
   const [isBedModalOpen, setIsBedModalOpen] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [editingStaff, setEditingStaff] = useState<Professional | null>(null);
   const [editingBed, setEditingBed] = useState<SalonBed | null>(null);
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
 
   // Forms
   const [serviceForm, setServiceForm] = useState({
@@ -37,15 +40,17 @@ export default function AdminSettings() {
   });
 
   const [bedForm, setBedForm] = useState({ name: '', notes: '' });
+  const [userForm, setUserForm] = useState({ display_name: '', role: 'staff' as 'admin'|'staff', active: true });
 
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [confRes, staffRes, servRes, bedsRes] = await Promise.all([
+      const [confRes, staffRes, servRes, bedsRes, usersRes] = await Promise.all([
         configSvc.get(),
         professionalsSvc.getAll(),
         servicesSvc.getAll(),
-        bedsSvc.getAll()
+        bedsSvc.getAll(),
+        usersSvc.getAll()
       ]);
       if (confRes.data) {
         setConfig(confRes.data);
@@ -54,6 +59,7 @@ export default function AdminSettings() {
       if (staffRes.data) setStaff(staffRes.data);
       if (servRes.data) setServices(servRes.data);
       if (bedsRes.data) setBeds(bedsRes.data);
+      if (usersRes.data) setUsers(usersRes.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -243,6 +249,33 @@ export default function AdminSettings() {
   const handleToggleBed = async (b: SalonBed) => {
     try { await bedsSvc.update(b.id, { active: !b.active }); loadData(); } catch (err) { console.error(err); }
   };
+  
+  // --- USERS LOGIC ---
+  const handleOpenUserModal = (u: UserProfile) => {
+    setEditingUser(u);
+    setUserForm({
+      display_name: u.display_name || '',
+      role: u.role as 'admin'|'staff',
+      active: u.active
+    });
+    setIsUserModalOpen(true);
+  };
+  
+  const handleSaveUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingUser) return;
+    setIsSaving(true);
+    try {
+      await usersSvc.update(editingUser.uid, userForm);
+      setIsUserModalOpen(false);
+      loadData();
+    } catch (err) {
+      console.error(err);
+      alert('Error actualizando usuario.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // --- POLICIES LOGIC ---
   const handleSaveConfig = async () => {
@@ -304,6 +337,9 @@ export default function AdminSettings() {
         </button>
         <button onClick={() => setActiveTab('messages')} className={`px-6 py-2 rounded-full font-medium transition-all flex items-center gap-2 ${activeTab === 'messages' ? 'bg-primary text-white' : 'bg-surface-container hover:bg-surface-container-high'}`}>
           <span className="material-symbols-outlined text-sm">sms</span> Mensajes CRM
+        </button>
+        <button onClick={() => setActiveTab('users')} className={`px-6 py-2 rounded-full font-medium transition-all flex items-center gap-2 ${activeTab === 'users' ? 'bg-primary text-white' : 'bg-surface-container hover:bg-surface-container-high'}`}>
+          <span className="material-symbols-outlined text-sm">admin_panel_settings</span> Usuarios
         </button>
       </div>
 
@@ -456,95 +492,58 @@ export default function AdminSettings() {
         </div>
       )}
 
-      {/* TAB: MESSAGES */}
-      {activeTab === 'messages' && config && (
+      {/* TAB: USERS */}
+      {activeTab === 'users' && (
         <div className="space-y-6 animate-fade-in max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="space-y-4">
-              <h3 className="font-serif text-xl text-on-surface flex items-center gap-2 border-b border-outline-variant/20 pb-2">
-                <span className="material-symbols-outlined text-primary">diversity_3</span> Fidelización y Cumpleaños
-              </h3>
-              <p className="text-xs text-on-surface-variant mb-2">Mensajes automáticos de bienvenida y ocasiones especiales.</p>
-              
-              <div>
-                <label htmlFor="welcome_msg" className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Mensaje de Bienvenida y Fidelización</label>
-                <textarea 
-                  id="welcome_msg"
-                  rows={6}
-                  className="w-full px-4 py-3 text-sm bg-white border border-outline-variant/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-md transition-all duration-300 font-sans"
-                  value={config.loyalty_messages?.welcome || ''} 
-                  onChange={e => setConfig({...config, loyalty_messages: {...(config.loyalty_messages || {}), welcome: e.target.value} as any})}
-                  placeholder="¡Bienvenida a Estudio Estefany! 🌸"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="bday_msg" className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Felicitación de Cumpleaños</label>
-                <textarea 
-                  id="bday_msg"
-                  rows={6}
-                  className="w-full px-4 py-3 text-sm bg-white border border-outline-variant/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-md transition-all duration-300 font-sans"
-                  value={config.loyalty_messages?.birthday || ''} 
-                  onChange={e => setConfig({...config, loyalty_messages: {...(config.loyalty_messages || {}), birthday: e.target.value} as any})}
-                  placeholder="🎉 ¡Feliz cumpleaños! Tu regalo especial te espera."
-                />
-              </div>
-
-              <div>
-                <label htmlFor="promo_bday_msg" className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Promoción del Mes de Cumpleaños</label>
-                <textarea 
-                  id="promo_bday_msg"
-                  rows={6}
-                  className="w-full px-4 py-3 text-sm bg-white border border-outline-variant/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-md transition-all duration-300 font-sans"
-                  value={config.loyalty_messages?.promoBirthday || ''} 
-                  onChange={e => setConfig({...config, loyalty_messages: {...(config.loyalty_messages || {}), promoBirthday: e.target.value} as any})}
-                  placeholder="🎂 ¡Mes de cumpleaños! Disfruta tu descuento especial."
-                />
-              </div>
-            </Card>
-
-            <Card className="space-y-4">
-              <h3 className="font-serif text-xl text-on-surface flex items-center gap-2 border-b border-outline-variant/20 pb-2">
-                <span className="material-symbols-outlined text-secondary">rate_review</span> Seguimiento, Agendamiento y Recuperación
-              </h3>
-              <p className="text-xs text-on-surface-variant mb-2">Variables dinámicas aceptadas: <code className="bg-stone-100 px-1 py-0.5 rounded text-[11px] font-mono">{'{cliente}'}</code>, <code className="bg-stone-100 px-1 py-0.5 rounded text-[11px] font-mono">{'{servicio}'}</code>, <code className="bg-stone-100 px-1 py-0.5 rounded text-[11px] font-mono">{'{fecha}'}</code>, <code className="bg-stone-100 px-1 py-0.5 rounded text-[11px] font-mono">{'{hora}'}</code>, <code className="bg-stone-100 px-1 py-0.5 rounded text-[11px] font-mono">{'{profesional}'}</code>.</p>
-              
-              <div>
-                <label htmlFor="sched_msg" className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Confirmación de Agendamiento</label>
-                <textarea 
-                  id="sched_msg"
-                  rows={6}
-                  className="w-full px-4 py-3 text-sm bg-white border border-outline-variant/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-md transition-all duration-300 font-sans"
-                  value={config.loyalty_messages?.scheduling || ''} 
-                  onChange={e => setConfig({...config, loyalty_messages: {...(config.loyalty_messages || {}), scheduling: e.target.value} as any})}
-                  placeholder="Hola {cliente}, te confirmamos tu cita de {servicio} para el {fecha} a las {hora} con {profesional}. ¡Te esperamos! ✨"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="maint_msg" className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Seguimiento Post-Servicio (Retoque / Mantenimiento)</label>
-                <textarea 
-                  id="maint_msg"
-                  rows={6}
-                  className="w-full px-4 py-3 text-sm bg-white border border-outline-variant/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-md transition-all duration-300 font-sans"
-                  value={config.loyalty_messages?.maintenance || ''} 
-                  onChange={e => setConfig({...config, loyalty_messages: {...(config.loyalty_messages || {}), maintenance: e.target.value} as any})}
-                  placeholder="Hola, ya es momento de retocar tus pestañas. ✨"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="detractor_msg" className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Recuperación de Clientes Detractores / Inactivos (&gt; 2 meses)</label>
-                <textarea 
-                  id="detractor_msg"
-                  rows={6}
-                  className="w-full px-4 py-3 text-sm bg-white border border-outline-variant/30 rounded-2xl focus:outline-none focus:border-primary focus:shadow-md transition-all duration-300 font-sans"
-                  value={config.loyalty_messages?.detractors || ''} 
-                  onChange={e => setConfig({...config, loyalty_messages: {...(config.loyalty_messages || {}), detractors: e.target.value} as any})}
-                  placeholder="Queremos mejorar tu experiencia. ¿Podemos conversar?"
-                />
-              </div>
-            </Card>
+          <Card className="p-0 overflow-hidden border border-outline-variant/30">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse font-sans">
+                <thead>
+                  <tr className="bg-surface-container-low text-on-surface-variant text-[10px] uppercase tracking-[0.15em] font-bold">
+                    <th className="px-6 py-4">Usuario</th>
+                    <th className="px-6 py-4">Email</th>
+                    <th className="px-6 py-4">Rol</th>
+                    <th className="px-6 py-4">Estado</th>
+                    <th className="px-6 py-4 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant/10">
+                  {users.map(u => (
+                    <tr key={u.uid} className="hover:bg-surface-container-lowest transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                            {(u.display_name || u.email)[0].toUpperCase()}
+                          </div>
+                          <span className="text-sm font-bold text-on-surface">{u.display_name || 'Sin nombre'}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-on-surface-variant">{u.email}</td>
+                      <td className="px-6 py-4">
+                        <Badge variant={u.role === 'admin' ? 'peach' : 'default'} className="capitalize">{u.role}</Badge>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant={u.active ? 'success' : 'danger'}>{u.active ? 'Activo' : 'Inactivo'}</Badge>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Button variant="subtle" onClick={() => handleOpenUserModal(u)} className="p-2">
+                          <span className="material-symbols-outlined text-[18px]">edit</span>
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+          <div className="p-4 bg-primary-fixed rounded-2xl border border-primary/10 flex items-start gap-4">
+            <span className="material-symbols-outlined text-primary mt-0.5">info</span>
+            <div>
+              <p className="text-sm font-bold text-primary">Gestión de Acceso</p>
+              <p className="text-xs text-on-surface-variant leading-relaxed mt-1">
+                Los usuarios deben registrarse primero con su correo electrónico. Aquí puedes activar/desactivar sus cuentas y asignarles el rol de <strong>Administrador</strong> (acceso total) o <strong>Staff</strong> (acceso limitado a agenda y POS).
+              </p>
+            </div>
           </div>
         </div>
       )}
@@ -591,6 +590,29 @@ export default function AdminSettings() {
           <Input required label="Identificador / Nombre" value={bedForm.name} onChange={e => setBedForm({...bedForm, name: e.target.value})} />
           <Input label="Notas de ubicación" value={bedForm.notes} onChange={e => setBedForm({...bedForm, notes: e.target.value})} />
           <div className="flex justify-end gap-3 pt-4"><Button variant="ghost" type="button" onClick={() => setIsBedModalOpen(false)}>Cancelar</Button><Button type="submit" variant="primary" disabled={isSaving}>Guardar</Button></div>
+        </form>
+      </Modal>
+
+      <Modal open={isUserModalOpen} onClose={() => !isSaving && setIsUserModalOpen(false)} title="Editar Usuario y Rol">
+        <form onSubmit={handleSaveUser} className="space-y-4">
+          <Input label="Nombre a mostrar" value={userForm.display_name} onChange={e => setUserForm({...userForm, display_name: e.target.value})} />
+          <Select 
+            label="Rol del Sistema" 
+            value={userForm.role} 
+            onChange={e => setUserForm({...userForm, role: e.target.value as any})}
+            options={[ { value: 'admin', label: 'Administrador (Acceso Total)' }, { value: 'staff', label: 'Staff (Agenda y POS)' } ]}
+          />
+          <div className="flex items-center gap-2 py-2">
+            <input 
+              type="checkbox" 
+              id="user-active" 
+              checked={userForm.active} 
+              onChange={e => setUserForm({...userForm, active: e.target.checked})}
+              className="w-4 h-4 rounded border-outline-variant/30 text-primary focus:ring-primary"
+            />
+            <label htmlFor="user-active" className="text-sm font-medium text-on-surface">Cuenta Activa</label>
+          </div>
+          <div className="flex justify-end gap-3 pt-4"><Button variant="ghost" type="button" onClick={() => setIsUserModalOpen(false)}>Cancelar</Button><Button type="submit" variant="primary" disabled={isSaving}>Guardar Cambios</Button></div>
         </form>
       </Modal>
 

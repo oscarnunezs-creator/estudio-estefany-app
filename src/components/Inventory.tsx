@@ -186,17 +186,14 @@ export default function Inventory() {
       // MED-05: Validate price coherence
       if (cost < 0) {
         alert('El costo no puede ser negativo.');
-        setIsSaving(false);
         return;
       }
       if (sale > 0 && sale < cost) {
         alert('El precio de venta (staff) no puede ser menor al costo.');
-        setIsSaving(false);
         return;
       }
       if (pubPrice > 0 && pubPrice < cost) {
         alert('El precio público no puede ser menor al costo.');
-        setIsSaving(false);
         return;
       }
 

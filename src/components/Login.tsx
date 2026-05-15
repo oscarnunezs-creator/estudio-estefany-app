@@ -3,23 +3,41 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button, Input } from './ui';
 
 export default function Login() {
-  const { signIn } = useAuth();
+  const { signIn, signUp } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
-    const { error } = await signIn(email, password);
-
-    if (error) {
-      setError('Credenciales incorrectas. Verifica tu correo y contraseña.');
+    try {
+      if (isRegistering) {
+        const { error } = await signUp(email, password);
+        if (error) throw error;
+        setSuccess('¡Cuenta creada! Revisa tu correo para confirmar (si es necesario) o pide al administrador que active tu acceso.');
+        setIsRegistering(false);
+        setPassword('');
+      } else {
+        const { error } = await signIn(email, password);
+        if (error) throw error;
+      }
+    } catch (err: any) {
+      console.error('Auth error:', err);
+      if (isRegistering) {
+        setError('Error al crear la cuenta. Es posible que el correo ya esté registrado o la contraseña sea muy débil.');
+      } else {
+        setError('Credenciales incorrectas. Verifica tu correo y contraseña.');
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -91,8 +109,12 @@ export default function Login() {
           </div>
 
           <div className="space-y-2">
-            <h2 className="text-4xl font-headline-md text-on-surface tracking-tight font-normal">Bienvenida</h2>
-            <p className="text-xs text-on-surface-variant/60 font-bold tracking-widest uppercase">Ingresa tus credenciales para continuar</p>
+            <h2 className="text-4xl font-headline-md text-on-surface tracking-tight font-normal">
+              {isRegistering ? 'Crear Cuenta' : 'Bienvenida'}
+            </h2>
+            <p className="text-xs text-on-surface-variant/60 font-bold tracking-widest uppercase">
+              {isRegistering ? 'Regístrate para solicitar acceso' : 'Ingresa tus credenciales para continuar'}
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -114,7 +136,7 @@ export default function Login() {
               onChange={e => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              autoComplete="current-password"
+              autoComplete={isRegistering ? "new-password" : "current-password"}
               id="login-password"
             />
 
@@ -125,19 +147,39 @@ export default function Login() {
               </div>
             )}
 
+            {success && (
+              <div className="flex items-start gap-3 p-4 bg-primary/10 border border-primary/20 rounded-[1.5rem] animate-fade-in">
+                <span className="material-symbols-outlined text-[18px] text-primary flex-shrink-0 select-none">check_circle</span>
+                <p className="text-xs font-semibold text-primary leading-normal">{success}</p>
+              </div>
+            )}
+
             <Button
               type="submit"
               loading={loading}
               className="w-full py-4 text-xs font-bold uppercase tracking-[0.2em]"
               id="login-submit"
             >
-              {loading ? 'Ingresando...' : 'Ingresar al sistema'}
+              {loading ? (isRegistering ? 'Creando...' : 'Ingresando...') : (isRegistering ? 'Crear mi cuenta' : 'Ingresar al sistema')}
             </Button>
           </form>
 
-          <p className="text-center text-[10px] text-on-surface-variant/50 font-bold uppercase tracking-widest leading-relaxed">
-            ¿Problemas para ingresar? Contacta al soporte del estudio.
-          </p>
+          <div className="text-center space-y-4">
+            <button 
+              type="button"
+              onClick={() => {
+                setIsRegistering(!isRegistering);
+                setError('');
+                setSuccess('');
+              }}
+              className="text-[10px] text-primary font-bold uppercase tracking-widest hover:underline"
+            >
+              {isRegistering ? '¿Ya tienes cuenta? Ingresa aquí' : '¿No tienes cuenta? Regístrate'}
+            </button>
+            <p className="text-[10px] text-on-surface-variant/50 font-bold uppercase tracking-widest leading-relaxed">
+              ¿Problemas para ingresar? Contacta al soporte del estudio.
+            </p>
+          </div>
         </div>
       </div>
     </div>

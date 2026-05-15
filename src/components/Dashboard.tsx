@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
   AreaChart, Area, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer,
@@ -254,7 +255,7 @@ export default function Dashboard() {
 
 
   return (
-    <div className="p-8 space-y-8 animate-fade-in overflow-y-auto flex-1 bg-background select-none">
+    <div className="p-8 space-y-8 animate-fade-in overflow-y-auto flex-1 bg-background">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -507,11 +508,11 @@ export default function Dashboard() {
         <div className="space-y-8">
 
           {/* Summary today */}
-          <Card variant="cream" className="border border-outline-variant/30 select-none bg-surface-container-low">
+          <Card variant="cream" className="border border-outline-variant/30 bg-surface-container-low">
             <h2 className="text-[10px] font-bold text-on-surface-variant/80 uppercase tracking-[0.2em] mb-4 font-sans">
               Resumen del día
             </h2>
-            <div className="space-y-3 font-sans">
+            <div className="space-y-1 font-sans">
               {[
                 { label: 'Completadas', count: data.todayAppointments.filter(a => a.status === 'completed').length },
                 { label: 'Confirmadas', count: data.todayAppointments.filter(a => a.status === 'confirmed').length },
@@ -519,16 +520,20 @@ export default function Dashboard() {
                 { label: 'No asistió',  count: data.todayAppointments.filter(a => a.status === 'no-show').length },
                 { label: 'Canceladas',  count: data.todayAppointments.filter(a => a.status === 'cancelled').length },
               ].map(row => (
-                <div key={row.label} className="flex justify-between text-xs py-1 border-b border-outline-variant/10 last:border-b-0">
-                  <span className="text-on-surface-variant font-medium">{row.label}</span>
-                  <span className="font-bold text-on-surface">{row.count}</span>
-                </div>
+                <Link 
+                  to="/agenda" 
+                  key={row.label} 
+                  className="flex justify-between items-center text-xs py-2 px-2 border-b border-outline-variant/5 last:border-b-0 hover:bg-white/60 rounded-xl transition-all group"
+                >
+                  <span className="text-on-surface-variant font-medium group-hover:text-primary">{row.label}</span>
+                  <span className="font-bold text-on-surface bg-surface-container px-2 py-0.5 rounded-full min-w-[24px] text-center">{row.count}</span>
+                </Link>
               ))}
             </div>
           </Card>
 
           {/* Acquisition Channels Breakdown */}
-          <Card className="bg-white border border-outline-variant/30 select-none">
+          <Card className="bg-white border border-outline-variant/30">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-[10px] font-bold text-on-surface-variant/80 uppercase tracking-[0.2em] flex items-center gap-1.5 font-sans">
                 <span className="material-symbols-outlined text-[18px] text-primary select-none font-normal">campaign</span>
@@ -576,7 +581,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Upcoming Birthdays Alert */}
-          <Card className="bg-white border border-outline-variant/30 select-none">
+          <Card className="bg-white border border-outline-variant/30">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-[10px] font-bold text-on-surface-variant/80 uppercase tracking-[0.2em] flex items-center gap-1.5 font-sans">
                 <span className="material-symbols-outlined text-[18px] text-primary select-none animate-pulse">cake</span>
@@ -645,7 +650,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Low stock alert */}
-          <Card className="bg-white border border-outline-variant/30 select-none">
+          <Card className="bg-white border border-outline-variant/30">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-[10px] font-bold text-on-surface-variant/80 uppercase tracking-[0.2em] flex items-center gap-1.5 font-sans">
                 <span className="material-symbols-outlined text-[18px] text-error select-none">warning</span>
@@ -658,45 +663,53 @@ export default function Dashboard() {
             {data.lowStock.length === 0 ? (
               <p className="text-xs text-on-surface-variant/60 font-bold uppercase tracking-wider text-center py-4 bg-surface-container-low/50 rounded-2xl border border-dashed border-outline-variant/40">✅ Inventario en orden</p>
             ) : (
-              <div className="space-y-3 font-sans">
+              <div className="space-y-1.5 font-sans">
                 {data.lowStock.slice(0, 5).map(p => (
-                  <div key={p.id} className="flex items-center justify-between py-1 border-b border-outline-variant/10 last:border-b-0">
+                  <Link 
+                    to="/inventory" 
+                    key={p.id} 
+                    className="flex items-center justify-between py-2 px-2 border-b border-outline-variant/10 last:border-b-0 hover:bg-error-container/10 rounded-xl transition-all group"
+                  >
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="material-symbols-outlined text-[16px] text-primary flex-shrink-0 select-none">package</span>
-                      <span className="text-xs font-bold text-on-surface truncate max-w-[130px]">{p.name}</span>
+                      <span className="material-symbols-outlined text-[16px] text-primary flex-shrink-0 select-none group-hover:scale-110 transition-transform">package</span>
+                      <span className="text-xs font-bold text-on-surface truncate max-w-[130px] group-hover:text-primary">{p.name}</span>
                     </div>
-                    <span className="text-xs font-bold text-error">
-                      {p.stock} / {p.min_stock} {p.unit}
+                    <span className="text-xs font-bold text-error bg-error-container/30 px-2 py-0.5 rounded-full">
+                      {p.stock} / {p.min_stock}
                     </span>
-                  </div>
+                  </Link>
                 ))}
                 {data.lowStock.length > 5 && (
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/40 text-center pt-1">+{data.lowStock.length - 5} más</p>
+                  <Link to="/inventory" className="block text-[10px] font-bold uppercase tracking-wider text-primary text-center pt-2 hover:underline">
+                    Ver {data.lowStock.length - 5} productos más
+                  </Link>
                 )}
               </div>
             )}
           </Card>
 
           {/* Quick links */}
-          <Card variant="cream" className="border border-outline-variant/30 select-none bg-surface-container-low">
+          <Card variant="cream" className="border border-outline-variant/30 bg-surface-container-low">
             <h2 className="text-[10px] font-bold text-on-surface-variant/80 uppercase tracking-[0.2em] mb-4 font-sans">
               Accesos rápidos
             </h2>
             <div className="grid grid-cols-2 gap-3.5 font-sans">
               {[
-                { label: 'Nueva cita', href: '/agenda', icon: 'calendar_month' },
-                { label: 'Nuevo cliente', href: '/clients', icon: 'person_add' },
-                { label: 'Cobrar POS', href: '/pos', icon: 'payments' },
-                { label: 'Inventario', href: '/inventory', icon: 'inventory_2' },
+                { label: 'Nueva cita', to: '/agenda', icon: 'calendar_today' },
+                { label: 'Cobrar POS', to: '/pos', icon: 'shopping_basket' },
+                { label: 'Clientes', to: '/clients', icon: 'groups' },
+                { label: 'Inventario', to: '/inventory', icon: 'inventory_2' },
+                { label: 'Finanzas', to: '/finance', icon: 'account_balance_wallet' },
+                { label: 'Configuración', to: '/settings', icon: 'settings' },
               ].map(item => (
-                <a
+                <Link
                   key={item.label}
-                  href={item.href}
-                  className="flex flex-col items-center gap-2 p-4 bg-white rounded-[1.5rem] border border-outline-variant/20 hover:border-primary hover:shadow-md active:scale-95 transition-all duration-300 text-center cursor-pointer group"
+                  to={item.to}
+                  className="flex flex-col items-center gap-2 p-4 bg-white rounded-[1.5rem] border border-outline-variant/20 hover:border-primary hover:shadow-md active:scale-95 transition-all duration-300 text-center group"
                 >
-                  <span className="material-symbols-outlined text-[20px] text-primary group-hover:scale-110 transition-transform select-none">{item.icon}</span>
+                  <span className="material-symbols-outlined text-[20px] text-primary group-hover:scale-110 transition-transform">{item.icon}</span>
                   <span className="text-[10px] font-bold text-on-surface-variant/80 group-hover:text-primary tracking-wide uppercase">{item.label}</span>
-                </a>
+                </Link>
               ))}
             </div>
           </Card>
