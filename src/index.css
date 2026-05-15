@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+@theme {
+  /* ============================================================
+     ESTEFANY BY LASHES — Design System "Studio Spa Aesthetic"
+     ============================================================ */
+
+  /* Legacy brand compatibility mappings (Prevents styling breakages in other files) */
+  --color-isla-red: #8d4b00;    /* Amber 600 */
+  --color-brand: #8d4b00;       /* Amber 600 */
+  --color-brand-hover: #b15f00; /* Amber 700 */
+  --color-brand-light: #ffdcc3; /* Amber 100 */
+  --color-pure-black: #231a13;  /* Stone 900 on-surface */
+  --color-ink-grey: #231a13;
+  --color-cream-canvas: #fff8f5; /* Stone 50 background */
+  --color-white-surface: #ffffff;
+  --color-deep-grey: #392e26;    /* inverse-surface */
+  --color-warm-grey-border: #f2dfd3; /* Stone 200 outline-variant */
+  --color-muted-text-grey: #554336;  /* Stone 600 on-surface-variant */
+  --color-stone-grey: #887364;       /* Stone 400 outline */
+  --color-minimal-border-grey: #887364;
+  --color-soft-peach: #fff1e9;       /* surface-container-low */
+
+  /* New Studio Spa Palette (Stone & Amber/Emerald/Cobalt Luxe) */
+  --color-primary: #8d4b00;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #b15f00;
+  --color-on-primary-container: #fffbff;
+  --color-inverse-primary: #ffb77d;
+  --color-primary-fixed: #ffdcc3;
+  --color-primary-fixed-dim: #ffb77d;
+  --color-on-primary-fixed: #2f1500;
+  --color-on-primary-fixed-variant: #6e3900;
+
+  --color-secondary: #006c4a;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #82f5c1;
+  --color-on-secondary-container: #00714e;
+  --color-secondary-fixed: #85f8c4;
+  --color-secondary-fixed-dim: #68dba9;
+  --color-on-secondary-fixed: #002114;
+  --color-on-secondary-fixed-variant: #005137;
+
+  --color-tertiary: #006096;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #007abd;
+  --color-on-tertiary-container: #fdfcff;
+  --color-tertiary-fixed: #cee5ff;
+  --color-tertiary-fixed-dim: #96ccff;
+  --color-on-tertiary-fixed: #001d32;
+  --color-on-tertiary-fixed-variant: #004a75;
+
+  --color-surface: #fff8f5;
+  --color-surface-dim: #e9d7cb;
+  --color-surface-bright: #fff8f5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #fff1e9;
+  --color-surface-container: #fdeade;
+  --color-surface-container-high: #f7e5d9;
+  --color-surface-container-highest: #f2dfd3;
+  --color-on-surface: #231a13;
+  --color-on-surface-variant: #554336;
+  --color-inverse-surface: #392e26;
+  --color-inverse-on-surface: #ffede3;
+  --color-outline: #887364;
+  --color-outline-variant: #dbc2b0;
+  --color-surface-tint: #904d00;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-background: #fff8f5;
+  --color-on-background: #231a13;
+  --color-surface-variant: #f2dfd3;
+
+  /* Semantic colors */
+  --color-success: #006c4a;
+  --color-warning: #8d4b00;
+
+  /* Typography */
+  --font-serif: 'Playfair Display', ui-serif, Georgia, Cambria, serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Border Radius (High-End Luxury Soft Curves) */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+  --radius-full: 9999px;
+  --radius-cards: 2rem;
+  --radius-pills: 9999px;
+  --radius-badges: 0.5rem;
+  --radius-inputs: 9999px; /* Pill input default */
+  --radius-buttons: 9999px; /* Pill button default */
+
+  /* Layout and Custom Spacing Units */
+  --spacing-unit: 4px;
+  --spacing-container-padding: 2rem;
+  --spacing-gutter: 1.5rem;
+  --spacing-section-gap: 5rem;
+  --spacing-stack-sm: 0.75rem;
+  --spacing-stack-md: 1.5rem;
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-on-surface);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   SCROLLBAR STYLING (Minimalist Studio Style)
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-container-highest);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline);
+}
+
+/* ============================================================
+   FOCUS STYLES
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   ANIMATIONS & TRANSITIONS
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-fade-in { animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-slide-in { animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-spin { animation: spin 1s linear infinite; }
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+/* ============================================================
+   LUXURY STUDIO SPA UTILITY CLASSES
+   ============================================================ */
+
+/* Playfair Display voice */
+.font-serif-luxury {
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+
+/* Typography styles */
+.font-display-lg {
+  font-family: var(--font-serif);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.font-display-lg-mobile {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.font-headline-md {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.font-headline-sm {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.font-body-lg {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.font-body-md {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.font-label-md {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.font-caption {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Advanced Glassmorphic Surfaces */
+.glass-card {
+  background: rgba(255, 248, 245, 0.75); /* transparent surface */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(219, 194, 176, 0.35); /* outline-variant at lower opacity */
+}
+
+.glass-modal {
+  background: rgba(255, 248, 245, 0.82); /* transparent surface dim */
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(136, 115, 100, 0.2); /* outline border soft */
+  box-shadow: 0 20px 50px -12px rgba(35, 26, 19, 0.08); /* soft stone shadow */
+}
+
+/* Material Symbols Outlined Custom Style */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layout Gallery Grid Padding */
+.gallery-padding {
+  padding: var(--spacing-container-padding);
+}
