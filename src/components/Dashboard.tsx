@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import { format, parseISO, subDays, subYears, startOfYear, endOfYear } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { StatCard, Card, Badge, EmptyState, Spinner } from './ui';
+import { StatCard, Card, Badge, EmptyState, Spinner, ErrorState } from './ui';
 import { formatCurrency, formatTime, STATUS_LABELS, STATUS_COLORS, getWhatsAppLink } from '../lib/utils';
 import { appointmentsSvc, transactionsSvc, customersSvc, salesSvc, productsSvc, configSvc } from '../services/salon';
 import type { Appointment, Product, SalonConfig } from '../types';
@@ -112,8 +112,16 @@ export default function Dashboard() {
     acquisitionChannels: []
   });
   const [config, setConfig] = useState<SalonConfig | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
+    setLoadError(null);
+    // Timeout defensivo: si tras 12s no termina, muestra error
+    const timeoutId = setTimeout(() => {
+      setData(prev => ({ ...prev, loading: false }));
+      setLoadError('La carga tomó demasiado tiempo. Verifica tu conexión e intenta de nuevo.');
+    }, 12000);
+
     try {
       setData(prev => ({ ...prev, loading: true }));
 
@@ -233,7 +241,10 @@ export default function Dashboard() {
       });
     } catch (error) {
       console.error('Error loading dashboard data:', error);
+      setLoadError('No se pudo cargar el dashboard. Intenta de nuevo.');
       setData(prev => ({ ...prev, loading: false }));
+    } finally {
+      clearTimeout(timeoutId);
     }
   }, []);
 
@@ -245,6 +256,14 @@ export default function Dashboard() {
     return (
       <div className="flex items-center justify-center h-64">
         <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex items-center justify-center h-64 p-8">
+        <ErrorState message={loadError} onRetry={load} />
       </div>
     );
   }

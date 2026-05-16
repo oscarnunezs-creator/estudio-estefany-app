@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { format, addWeeks, subWeeks, isSameDay, isToday, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, addDays, subMonths, addMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Papa from 'papaparse';
-import { Button, Badge, Spinner, EmptyState } from './ui';
+import { Button, Badge, Spinner, EmptyState, ErrorState } from './ui';
 import { getWeekDays, formatCurrency, STATUS_LABELS, parseLocalISO } from '../lib/utils';
 import { appointmentsSvc, professionalsSvc, transactionsSvc } from '../services/salon';
 import { useAuth } from '../contexts/AuthContext';
@@ -108,34 +108,49 @@ export default function Agenda() {
   const [showCreate, setShowCreate] = useState(false);
   const [detailAppt, setDetailAppt] = useState<Appointment | null>(null);
   const [clickedSlot, setClickedSlot] = useState<{ date: string; time: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const weekDays = getWeekDays(weekBase);
 
+  // FIX: derive week range inside callback using weekBase directly — NOT weekDays.
+  // weekDays is recalculated every render → including it in deps causes infinite loop.
   const loadAppointments = useCallback(async () => {
+    setError(null);
     try {
       setLoading(true);
-      let from, to;
+      let from: string, to: string;
       if (view === 'month') {
         const start = startOfWeek(startOfMonth(monthBase));
         const end = endOfWeek(endOfMonth(monthBase));
         from = start.toISOString();
         to = new Date(end.getTime() + 86400000).toISOString();
       } else {
-        from = weekDays[0].toISOString();
-        to = new Date(weekDays[6].getTime() + 86400000).toISOString();
+        // Compute week range directly from weekBase — avoids the weekDays reference
+        const weekStart = startOfWeek(weekBase, { weekStartsOn: 1 });
+        from = weekStart.toISOString();
+        to = new Date(weekStart.getTime() + 7 * 86400000).toISOString();
       }
-      const { data } = await appointmentsSvc.getByRange(from, to);
+      const { data, error: fetchError } = await appointmentsSvc.getByRange(from, to);
+      if (fetchError) throw fetchError;
       setAppointments(data || []);
-    } catch (error) {
-      console.error('Error loading appointments:', error);
+    } catch (err: any) {
+      console.error('Error loading appointments:', err);
+      setError('No se pudieron cargar las citas. Verifica tu conexión e intenta de nuevo.');
     } finally {
       setLoading(false);
     }
-  }, [weekBase, monthBase, view]);
+  }, [weekBase, monthBase, view]); // weekDays intentionally excluded — derived from weekBase
 
   useEffect(() => { loadAppointments(); }, [loadAppointments]);
   useEffect(() => {
-    professionalsSvc.getAll().then(({ data }) => setProfessionals(data || []));
+    (async () => {
+      try {
+        const { data } = await professionalsSvc.getAll();
+        setProfessionals(data || []);
+      } catch (err) {
+        console.error('Error loading professionals:', err);
+      }
+    })();
   }, []);
 
   const filtered = filterProfId
@@ -301,6 +316,10 @@ export default function Agenda() {
       {loading ? (
         <div className="flex items-center justify-center flex-1">
           <Spinner size="lg" />
+        </div>
+      ) : error ? (
+        <div className="flex items-center justify-center flex-1 p-8">
+          <ErrorState message={error} onRetry={loadAppointments} />
         </div>
       ) : view === 'list' ? (
         <ListView appointments={filtered} weekDays={weekDays} onSelect={setDetailAppt} onQuickComplete={handleQuickComplete} />

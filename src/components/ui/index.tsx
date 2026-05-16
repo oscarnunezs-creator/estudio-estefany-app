@@ -313,6 +313,33 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
 }
 
 // ============================================================
+// ERROR STATE (Retry-capable error display)
+// ============================================================
+interface ErrorStateProps {
+  message?: string;
+  onRetry?: () => void;
+}
+
+export function ErrorState({ message = 'No se pudo cargar la información.', onRetry }: ErrorStateProps) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-8 text-center bg-error-container/10 rounded-[2rem] border border-dashed border-error/20 animate-fade-in">
+      <span className="material-symbols-outlined text-[48px] text-error/50 mb-4">wifi_off</span>
+      <p className="text-lg font-headline-sm text-on-surface mb-2">Error de carga</p>
+      <p className="text-sm text-on-surface-variant/70 mb-6 max-w-sm font-sans leading-relaxed">{message}</p>
+      {onRetry && (
+        <button
+          onClick={onRetry}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full text-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all shadow-sm"
+        >
+          <span className="material-symbols-outlined text-[18px]">refresh</span>
+          Reintentar
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
 // PAGINATION (Elegant, minimal boutique pagination)
 // ============================================================
 interface PaginationProps {

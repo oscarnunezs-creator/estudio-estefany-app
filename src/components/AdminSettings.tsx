@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, Modal, Badge, Spinner, EmptyState, Input, Select, Card } from './ui';
+import { Button, Modal, Badge, Spinner, EmptyState, Input, Select, Card, ErrorState } from './ui';
 import { configSvc, professionalsSvc, servicesSvc, bedsSvc, usersSvc } from '../services/salon';
 import { setSalonCurrency } from '../lib/utils';
 import Papa from 'papaparse';
@@ -16,6 +16,7 @@ export default function AdminSettings() {
   
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Modals
   const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
@@ -43,6 +44,11 @@ export default function AdminSettings() {
   const [userForm, setUserForm] = useState({ display_name: '', role: 'staff' as 'admin'|'staff', active: true });
 
   const loadData = useCallback(async () => {
+    setLoadError(null);
+    const timeoutId = setTimeout(() => {
+      setLoading(false);
+      setLoadError('La carga tomó demasiado tiempo. Verifica tu conexión.');
+    }, 12000);
     try {
       setLoading(true);
       const [confRes, staffRes, servRes, bedsRes, usersRes] = await Promise.all([
@@ -62,7 +68,9 @@ export default function AdminSettings() {
       if (usersRes.data) setUsers(usersRes.data);
     } catch (err) {
       console.error(err);
+      setLoadError('No se pudo cargar la configuración. Intenta de nuevo.');
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   }, []);
@@ -294,6 +302,7 @@ export default function AdminSettings() {
   };
 
   if (loading && !config) return <div className="flex justify-center py-20"><Spinner size="lg" /></div>;
+  if (loadError) return <div className="flex justify-center py-20 px-8"><ErrorState message={loadError} onRetry={loadData} /></div>;
 
   const groupedServices = services.reduce((acc, service) => {
     const category = service.category || 'Otros';

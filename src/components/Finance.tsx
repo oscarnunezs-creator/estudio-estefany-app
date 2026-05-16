@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { startOfWeek, startOfMonth, addDays, format as dateFnsFormat, getYear, getMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Button, Modal, Badge, Spinner, EmptyState, StatCard, Input, Select, Pagination } from './ui';
+import { Button, Modal, Badge, Spinner, EmptyState, StatCard, Input, Select, Pagination, ErrorState } from './ui';
 import { transactionsSvc, cashRecordsSvc, salesSvc, appointmentsSvc, professionalsSvc } from '../services/salon';
 import { useAuth } from '../contexts/AuthContext';
 import { formatCurrency, formatTime, formatDate } from '../lib/utils';
@@ -68,6 +68,7 @@ const todayStr = () => new Date().toISOString().split('T')[0];
 export default function Finance() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [sales, setSales] = useState<any[]>([]);
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -134,6 +135,12 @@ export default function Finance() {
   const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex);
 
   const loadData = useCallback(async () => {
+    setLoadError(null);
+    const timeoutId = setTimeout(() => {
+      setLoading(false);
+      setLoadError('La carga tomó demasiado tiempo. Verifica tu conexión.');
+    }, 12000);
+
     try {
       setLoading(true);
       const { data: cashData } = await cashRecordsSvc.getToday();
@@ -150,15 +157,18 @@ export default function Finance() {
         appointmentsSvc.getByRange(from, to),
       ]);
 
-      const sortedTx = (txRes.data || []).sort((a: Transaction, b: Transaction) =>
+      const rawTx = (txRes.data || []) as unknown as Transaction[];
+      const sortedTx = rawTx.sort((a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       setTransactions(sortedTx);
-      setSales(salesRes.data || []);
-      setAppointments(apptRes.data || []);
+      setSales((salesRes.data || []) as any[]);
+      setAppointments((apptRes.data || []) as any[]);
     } catch (err) {
       console.error('Error loading finance data:', err);
+      setLoadError('No se pudo cargar la información financiera. Intenta de nuevo.');
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   }, [periodMode, selectedDate, selectedWeekDate, selectedMonth, selectedYear]);
@@ -549,6 +559,10 @@ export default function Finance() {
       {loading ? (
         <div className="flex justify-center py-20">
           <Spinner size="lg" />
+        </div>
+      ) : loadError ? (
+        <div className="py-8">
+          <ErrorState message={loadError} onRetry={loadData} />
         </div>
       ) : (
         <>
